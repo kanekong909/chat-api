@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  avatar    String?
+  createdAt DateTime @default(now())
+
+  memberships  GroupMember[]
+  sentMessages Message[]
+}
+
+model Group {
+  id        String   @id @default(cuid())
+  name      String
+  isPrivate Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  members  GroupMember[]
+  messages Message[]
+}
+
+model GroupMember {
+  userId    String
+  groupId   String
+  role      String   @default("member")
+  joinedAt  DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
+
+  @@id([userId, groupId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  content   String?
+  fileUrl   String?
+  fileType  String?
+  createdAt DateTime @default(now())
+
+  senderId String
+  groupId  String
+
+  sender User  @relation(fields: [senderId], references: [id])
+  group  Group @relation(fields: [groupId], references: [id])
+}
