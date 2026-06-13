@@ -12,6 +12,8 @@ import authRoutes from './modules/auth/auth.routes'
 import groupRoutes from './modules/groups/groups.routes'
 import messageRoutes from './modules/messages/messages.routes'
 import { setupSockets } from './sockets'
+import uploadRoutes from './modules/upload/upload.routes'
+import multipart from '@fastify/multipart'
 
 const fastify = Fastify({ logger: true })
 
@@ -24,6 +26,8 @@ async function start() {
   await fastify.register(authRoutes, { prefix: '/api/auth' })
   await fastify.register(groupRoutes, { prefix: '/api/groups' })
   await fastify.register(messageRoutes, { prefix: '/api/messages' })
+  await fastify.register(multipart, { limits: { fileSize: 10 * 1024 * 1024 } }) // 10MB
+  await fastify.register(uploadRoutes, { prefix: '/api/upload' })
 
   const port = Number(process.env.PORT) || 3000
   await fastify.listen({ port, host: '0.0.0.0' })
