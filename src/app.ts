@@ -18,7 +18,10 @@ import multipart from '@fastify/multipart'
 const fastify = Fastify({ logger: true })
 
 async function start() {
-  await fastify.register(cors, { origin: true })
+  await fastify.register(cors, {
+    origin: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
+  })
   await fastify.register(jwtPlugin, { secret: process.env.JWT_SECRET! })
   await fastify.register(prismaPlugin)
   await fastify.register(redisPlugin)
