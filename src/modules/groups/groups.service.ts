@@ -28,9 +28,20 @@ export async function createGroup(fastify: FastifyInstance, data: {
 export async function getUserGroups(fastify: FastifyInstance, userId: string) {
   return fastify.prisma.group.findMany({
     where: { members: { some: { userId } } },
+    orderBy: { createdAt: 'desc' },
     include: {
-      members: { include: { user: { select: { id: true, username: true, avatar: true } } } },
-      messages: { orderBy: { createdAt: 'desc' }, take: 1 }
+      members: {
+        include: {
+          user: { select: { id: true, username: true, avatar: true } }
+        }
+      },
+      messages: {
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+        include: {
+          sender: { select: { id: true, username: true } }
+        }
+      }
     }
   })
 }

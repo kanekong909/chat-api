@@ -7,12 +7,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  avatar    String?
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  username    String   @unique
+  email       String   @unique
+  password    String
+  avatar      String?
+  phone       String?
+  nationality String?
+  bio         String?
+  createdAt   DateTime @default(now())
 
   memberships  GroupMember[]
   sentMessages Message[]
